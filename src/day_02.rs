@@ -6,7 +6,7 @@ use nom::{
     bytes::complete::{is_a, tag},
     character::complete::{alpha1, digit1, multispace0},
     combinator::{all_consuming, map_res},
-    multi::{separated_list1},
+    multi::separated_list1,
     Finish, IResult,
 };
 
@@ -94,9 +94,7 @@ impl FromStr for Game {
 impl Solution for Day {
     fn compute_1(&self, input: &str) -> Result<String> {
         let games: Vec<Game> = input.lines().map(str::parse).collect::<Result<_>>()?;
-
         let (max_red, max_green, max_blue) = (12_usize, 13_usize, 14_usize);
-
         let possible_games = games
             .into_iter()
             .filter(|g| {
@@ -105,7 +103,6 @@ impl Solution for Day {
                     .all(|s| s.red <= max_red && s.green <= max_green && s.blue <= max_blue)
             })
             .collect_vec();
-
         let result = possible_games.iter().map(|g| g.id).sum::<usize>();
 
         Ok(result.to_string())
@@ -113,11 +110,8 @@ impl Solution for Day {
 
     fn compute_2(&self, input: &str) -> Result<String> {
         let games: Vec<Game> = input.lines().map(str::parse).collect::<Result<_>>()?;
-
         let min_sets = games.into_iter().map(|g| g.calculate_min_set());
-
         let powers = min_sets.map(|s| s.calculate_power());
-
         let result = powers.sum::<usize>();
 
         Ok(result.to_string())
