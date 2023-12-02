@@ -3,11 +3,10 @@ use std::{cmp, str::FromStr};
 use anyhow::{bail, Result};
 use itertools::Itertools;
 use nom::{
-    branch::alt,
-    bytes::complete::{is_a, tag, take_until1},
-    character::complete::{alpha1, digit1, line_ending, multispace0},
+    bytes::complete::{is_a, tag},
+    character::complete::{alpha1, digit1, multispace0},
     combinator::{all_consuming, map_res},
-    multi::{many1, many_till, separated_list1},
+    multi::{separated_list1},
     Finish, IResult,
 };
 
@@ -29,13 +28,13 @@ struct Set {
 }
 
 impl Set {
-    fn calculate_power(self: &Self) -> usize {
+    fn calculate_power(&self) -> usize {
         self.red * self.green * self.blue
     }
 }
 
 impl Game {
-    fn calculate_min_set(self: &Self) -> Set {
+    fn calculate_min_set(&self) -> Set {
         self.sets
             .iter()
             .fold(Set::default(), |mut min_set, curr_set| {

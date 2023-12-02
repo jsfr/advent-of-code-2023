@@ -5,7 +5,7 @@ mod tests {
     use std::fs::read_to_string;
 
     fn read_input(day: &str) -> String {
-        let file = format!("./input/{}", day);
+        let file = format!("./input/{day}");
 
         read_to_string(&file)
             .context(format!("Failed to read {file}"))
