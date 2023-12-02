@@ -10,3 +10,6 @@ fmt:
 
 fix:
     cargo clippy --all-targets --all-features --fix -- -W clippy::pedantic
+
+test:
+	cargo test

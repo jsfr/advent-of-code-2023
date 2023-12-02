@@ -28,7 +28,7 @@ mod tests {
 
     #[test]
     fn day_02() {
-        let input = read_input("01");
+        let input = read_input("02");
         let day = crate::day_02::Day {};
 
         let answer = "2683";
