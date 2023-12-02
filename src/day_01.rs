@@ -19,9 +19,9 @@ impl Solution for Day {
                     .last()
                     .context(format!("no last digit present in line '{line}'"))?;
 
-                let calibration_value: usize =
-                    format!("{first}{last}").parse().context(format!(
-                        "Failed to parse calibration value '{first}{last}' as a usize"))?;
+                let calibration_value: usize = format!("{first}{last}").parse().context(
+                    format!("Failed to parse calibration value '{first}{last}' as a usize"),
+                )?;
 
                 Ok(calibration_value)
             })
