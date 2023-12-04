@@ -39,4 +39,27 @@ mod tests {
         let result = day.compute_2(&input).unwrap();
         assert_eq!(result, answer);
     }
+
+    #[test]
+    fn day_03() {
+        let input = "467..114..\n\
+                     ...*......\n\
+                     ..35..633.\n\
+                     ......#...\n\
+                     617*......\n\
+                     .....+.58.\n\
+                     ..592.....\n\
+                     ......755.\n\
+                     ...$.*....\n\
+                     .664.598..";
+        let day = crate::day_03::Day {};
+
+        let answer = "4361";
+        let result = day.compute_1(&input).unwrap();
+        assert_eq!(result, answer);
+
+        // let answer = "";
+        // let result = day.compute_2(&input).unwrap();
+        // assert_eq!(result, answer);
+    }
 }

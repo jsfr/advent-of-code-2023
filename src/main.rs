@@ -1,5 +1,6 @@
 mod day_01;
 mod day_02;
+mod day_03;
 mod solution;
 mod tests;
 
@@ -10,7 +11,7 @@ use argh::FromArgs;
 use solution::Solution;
 
 #[derive(FromArgs)]
-/// AOC 2022
+/// Advent of Code 2023
 struct Args {
     #[argh(positional)]
     day: String,
@@ -45,6 +46,7 @@ fn get_day(day: &str) -> Option<Box<dyn Solution>> {
     let solution: Box<dyn Solution> = match day {
         "01" => Box::new(day_01::Day {}),
         "02" => Box::new(day_02::Day {}),
+        "03" => Box::new(day_03::Day {}),
         _ => return None,
     };
 
