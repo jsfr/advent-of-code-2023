@@ -3,7 +3,7 @@ use std::str::FromStr;
 use anyhow::{bail, Result};
 use itertools::Itertools;
 use nom::{
-    bytes::complete::tag,
+    bytes::complete::{tag, take_until},
     character::complete::{digit1, space0},
     combinator::{all_consuming, map_res},
     multi::many1,
@@ -40,7 +40,7 @@ impl Solution for Day {
         for (i, card) in cards.into_iter().enumerate() {
             let score = card.calculate_matching_numbers();
             for j in i + 1..i + 1 + score {
-                number_of_cards[j] += number_of_cards[i]
+                number_of_cards[j] += number_of_cards[i];
             }
         }
 
@@ -52,7 +52,6 @@ impl Solution for Day {
 
 #[derive(Debug)]
 struct Card {
-    id: usize,
     winning_numbers: Vec<usize>,
     card_numbers: Vec<usize>,
 }
@@ -101,9 +100,7 @@ fn parse_number_list(s: &str) -> IResult<&str, Vec<usize>> {
 }
 
 fn parse_card(s: &str) -> IResult<&str, Card> {
-    let (s, _) = tag("Card")(s)?;
-    let (s, _) = space0(s)?;
-    let (s, id) = map_res(digit1, str::parse::<usize>)(s)?;
+    let (s, _) = take_until(":")(s)?;
     let (s, _) = tag(":")(s)?;
     let (s, _) = space0(s)?;
     let (s, (winning_numbers, card_numbers)) =
@@ -112,7 +109,6 @@ fn parse_card(s: &str) -> IResult<&str, Card> {
     Ok((
         s,
         Card {
-            id,
             winning_numbers,
             card_numbers,
         },

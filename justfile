@@ -9,7 +9,7 @@ fmt:
     cargo fmt
 
 fix:
-    cargo clippy --all-targets --all-features --fix -- -W clippy::pedantic
+    cargo clippy --all-targets --all-features --fix --allow-staged -- -W clippy::pedantic
 
 test:
 	cargo test
