@@ -1,5 +1,6 @@
 mod day_01;
 mod day_02;
+mod day_04;
 mod solution;
 mod tests;
 
@@ -45,6 +46,7 @@ fn get_day(day: &str) -> Option<Box<dyn Solution>> {
     let solution: Box<dyn Solution> = match day {
         "01" => Box::new(day_01::Day {}),
         "02" => Box::new(day_02::Day {}),
+        "04" => Box::new(day_04::Day {}),
         _ => return None,
     };
 
