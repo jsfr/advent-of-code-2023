@@ -1,9 +1,5 @@
-use std::{
-    collections::HashMap,
-    str::FromStr,
-};
-
 use anyhow::{bail, Context, Result};
+use core::panic;
 use itertools::Itertools;
 use nom::{
     bytes::complete::tag,
@@ -13,6 +9,8 @@ use nom::{
     sequence::{separated_pair, tuple},
     Finish, IResult,
 };
+use rayon::prelude::*;
+use std::{collections::HashMap, str::FromStr};
 
 use crate::solution::Solution;
 
@@ -33,7 +31,7 @@ impl Solution for Day {
             (Humidity, Location),
         ];
 
-        let converted_seeds = pairs
+        let locations = pairs
             .iter()
             .map(|pair| almanac.conversion_maps.get(pair))
             .fold_options(almanac.seeds, |acc, conversion_map| {
@@ -41,16 +39,46 @@ impl Solution for Day {
             })
             .context("failed to convert from seeds to location")?;
 
-        let result = converted_seeds
-            .into_iter()
-            .min()
-            .context("no lowest value")?;
+        let result = locations.into_iter().min().context("no lowest value")?;
 
         Ok(result.to_string())
     }
 
-    fn compute_2(&self, _input: &str) -> Result<String> {
-        todo!()
+    fn compute_2(&self, input: &str) -> Result<String> {
+        use Type::{Fertilizer, Humidity, Light, Location, Seed, Soil, Temperature, Water};
+
+        let almanac: Almanac = input.parse()?;
+        let conversion_maps = [(Seed, Soil),
+            (Soil, Fertilizer),
+            (Fertilizer, Water),
+            (Water, Light),
+            (Light, Temperature),
+            (Temperature, Humidity),
+            (Humidity, Location)]
+        .iter()
+        .map(|pair| almanac.conversion_maps.get(pair))
+        .collect::<Option<Vec<&ConversionMap>>>()
+        .context("failed to get all conversion maps")?;
+
+        let locations: Vec<usize> = almanac
+            .seeds
+            .chunks_exact(2)
+            .par_bridge()
+            .flat_map(|pair| {
+                let [start, range] = *pair else {
+                    panic!("This can't happen")
+                };
+                let seeds: Vec<_> = (start..(start + range)).collect();
+
+                conversion_maps.iter().fold(seeds, |acc, conversion_map| {
+                    acc.par_iter().map(|x| conversion_map.convert(*x)).collect()
+                })
+            })
+            .collect();
+
+        let result = locations.into_iter().min().context("no lowest value")?;
+
+        Ok(result.to_string())
     }
 }
 
