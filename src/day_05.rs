@@ -48,13 +48,15 @@ impl Solution for Day {
         use Type::{Fertilizer, Humidity, Light, Location, Seed, Soil, Temperature, Water};
 
         let almanac: Almanac = input.parse()?;
-        let conversion_maps = [(Seed, Soil),
+        let conversion_maps = [
+            (Seed, Soil),
             (Soil, Fertilizer),
             (Fertilizer, Water),
             (Water, Light),
             (Light, Temperature),
             (Temperature, Humidity),
-            (Humidity, Location)]
+            (Humidity, Location),
+        ]
         .iter()
         .map(|pair| almanac.conversion_maps.get(pair))
         .collect::<Option<Vec<&ConversionMap>>>()
