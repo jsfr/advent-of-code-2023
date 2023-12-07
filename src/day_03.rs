@@ -111,17 +111,10 @@ impl Map {
         self.grid.get(pos.y).and_then(|line| line.get(pos.x))
     }
 
-    fn contains_symbol(&self, positions: Vec<Pos>) -> bool {
-        positions.iter().any(|pos| {
-            if let Some(t) = self.get_entry(pos) {
-                match t {
-                    Type::Symbol(_) => true,
-                    _ => false,
-                }
-            } else {
-                false
-            }
-        })
+    fn contains_symbol(&self, positions: &[Pos]) -> bool {
+        positions
+            .iter()
+            .any(|pos| matches!(self.get_entry(pos), Some(Type::Symbol(_))))
     }
 
     fn get_parts(&self) -> Vec<usize> {
@@ -129,7 +122,7 @@ impl Map {
             .iter()
             .filter_map(|(number, positions)| {
                 let neighbours = self.calculate_neighbours(positions);
-                if self.contains_symbol(neighbours) {
+                if self.contains_symbol(&neighbours) {
                     Some(*number)
                 } else {
                     None
@@ -149,7 +142,7 @@ impl Map {
                 })
             })
             .filter_map(|position| {
-                let neighbours = self.calculate_neighbours(&vec![position]);
+                let neighbours = self.calculate_neighbours(&[position]);
                 let adjacent_numbers = self
                     .numbers
                     .iter()
@@ -170,7 +163,7 @@ impl Map {
             .collect_vec()
     }
 
-    fn calculate_neighbours(&self, number_positions: &Vec<Pos>) -> Vec<Pos> {
+    fn calculate_neighbours(&self, number_positions: &[Pos]) -> Vec<Pos> {
         let diffs = [
             (-1, 0),
             (-1, -1),
@@ -188,17 +181,17 @@ impl Map {
                 diffs
                     .iter()
                     .map(|diff| {
-                        let y = pos.y as i32 + diff.0;
-                        let x = pos.x as i32 + diff.1;
+                        let y = i32::try_from(pos.y).unwrap() + diff.0;
+                        let x = i32::try_from(pos.x).unwrap() + diff.1;
 
                         if x >= 0
                             && y >= 0
-                            && x < self.grid[0].len() as i32
-                            && y < self.grid.len() as i32
+                            && x < i32::try_from(self.grid[0].len()).unwrap()
+                            && y < i32::try_from(self.grid.len()).unwrap()
                         {
                             Some(Pos {
-                                y: y as usize,
-                                x: x as usize,
+                                y: usize::try_from(y).unwrap(),
+                                x: usize::try_from(x).unwrap(),
                             })
                         } else {
                             None
