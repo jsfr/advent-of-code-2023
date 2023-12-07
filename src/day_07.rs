@@ -59,6 +59,16 @@ impl Solution for Day {
     }
 }
 
+#[derive(Debug)]
+struct GameNoJokers {
+    hands_and_bids: Vec<(Hand, usize)>,
+}
+
+#[derive(Debug)]
+struct GameWithJokers {
+    hands_and_bids: Vec<(Hand, usize)>,
+}
+
 #[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 struct Hand {
     cards: (Card, Card, Card, Card, Card),
@@ -82,14 +92,15 @@ enum Card {
     Joker,
 }
 
-#[derive(Debug)]
-struct GameNoJokers {
-    hands_and_bids: Vec<(Hand, usize)>,
-}
-
-#[derive(Debug)]
-struct GameWithJokers {
-    hands_and_bids: Vec<(Hand, usize)>,
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
+enum HandType {
+    FiveOfAKind,
+    FourOfAKind,
+    FullHouse,
+    ThreeOfAKind,
+    TwoPairs,
+    OnePair,
+    HighCard,
 }
 
 impl FromStr for GameNoJokers {
@@ -143,9 +154,7 @@ fn parse_hand(use_jokers: bool) -> impl Fn(&str) -> IResult<&str, Hand> {
 
 fn parse_card(use_jokers: bool) -> impl Fn(&str) -> IResult<&str, Card> {
     move |s: &str| {
-        use Card::{
-            Ace, Eight, Five, Four, Jack, Joker, King, Nine, Queen, Seven, Six, Ten, Three, Two,
-        };
+        use Card::*;
 
         let (s, card) = one_of("AKQJT98765432")(s)?;
         let card = match card {
@@ -196,22 +205,9 @@ impl Ord for Hand {
     }
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
-enum HandType {
-    FiveOfAKind,
-    FourOfAKind,
-    FullHouse,
-    ThreeOfAKind,
-    TwoPairs,
-    OnePair,
-    HighCard,
-}
-
 impl Hand {
     fn hand_type(self) -> HandType {
-        use HandType::{
-            FiveOfAKind, FourOfAKind, FullHouse, HighCard, OnePair, ThreeOfAKind, TwoPairs,
-        };
+        use HandType::*;
 
         if self.has_n_of_a_kind(5) {
             FiveOfAKind

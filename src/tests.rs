@@ -92,8 +92,8 @@ mod tests {
         let result = day.compute_1(&input).unwrap();
         assert_eq!(result, answer);
 
-        // let answer = "";
-        // let result = day.compute_2(&input).unwrap();
-        // assert_eq!(result, answer);
+        let answer = "250506580";
+        let result = day.compute_2(&input).unwrap();
+        assert_eq!(result, answer);
     }
 }
