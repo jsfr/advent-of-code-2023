@@ -11,9 +11,6 @@ impl Solution for Day {
     fn compute_1(&self, input: &str) -> Result<String> {
         let map: Map = input.parse()?;
 
-        dbg!(&map.numbers);
-        dbg!(&map.grid);
-
         let parts = map.get_parts();
 
         let result: usize = parts.into_iter().sum();
@@ -21,8 +18,14 @@ impl Solution for Day {
         Ok(result.to_string())
     }
 
-    fn compute_2(&self, _input: &str) -> Result<String> {
-        todo!()
+    fn compute_2(&self, input: &str) -> Result<String> {
+        let map: Map = input.parse()?;
+
+        let gear_parts = map.get_gear_parts();
+
+        let result: usize = gear_parts.into_iter().map(|(a, b)| a * b).sum();
+
+        Ok(result.to_string())
     }
 }
 
@@ -135,6 +138,37 @@ impl Map {
             .collect()
     }
 
+    fn get_gear_parts(&self) -> Vec<(usize, usize)> {
+        self.grid.iter().enumerate().flat_map(|(y, line)| {
+            line.iter().enumerate().filter_map(move |(x, t)| {
+                match t {
+                    Type::Symbol('*') => Some(Pos {x, y}),
+                    _ => None,
+                }
+            })
+        })
+            .filter_map(|position| {
+                let neighbours = self.calculate_neighbours(&vec![position]);
+                let adjacent_numbers = self.numbers
+                    .iter()
+                    .filter(|(_, number_positions)| {
+                        neighbours
+                            .iter().any(|neighbour| {
+                                number_positions.contains(neighbour)
+                            })
+                    })
+                    .map(|(number, _)| number)
+                    .collect_vec();
+
+                if adjacent_numbers.len() == 2 {
+                    Some((*adjacent_numbers[0], *adjacent_numbers[1]))
+                } else {
+                    None
+                }
+            })
+            .collect_vec()
+    }
+
     fn calculate_neighbours(&self, number_positions: &Vec<Pos>) -> Vec<Pos> {
         let diffs = [(-1, 0),
             (-1, -1),
@@ -155,9 +189,9 @@ impl Map {
                         let x = pos.x as i32 + diff.1;
 
                         if x >= 0
-                            && y >= 0
-                            && x < self.grid[0].len() as i32
-                            && y < self.grid.len() as i32
+                        && y >= 0
+                        && x < self.grid[0].len() as i32
+                        && y < self.grid.len() as i32
                         {
                             Some(Pos {
                                 y: y as usize,
