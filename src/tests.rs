@@ -41,6 +41,20 @@ mod tests {
     }
 
     #[test]
+    fn day_03() {
+        let input = read_input("03");
+        let day = crate::day_03::Day {};
+
+        let answer = "531561";
+        let result = day.compute_1(&input).unwrap();
+        assert_eq!(result, answer);
+
+        let answer = "83279367";
+        let result = day.compute_2(&input).unwrap();
+        assert_eq!(result, answer);
+    }
+
+    #[test]
     fn day_04() {
         let input = read_input("04");
         let day = crate::day_04::Day {};
