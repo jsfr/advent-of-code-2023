@@ -154,7 +154,9 @@ fn parse_hand(use_jokers: bool) -> impl Fn(&str) -> IResult<&str, Hand> {
 
 fn parse_card(use_jokers: bool) -> impl Fn(&str) -> IResult<&str, Card> {
     move |s: &str| {
-        use Card::{Ace, Eight, Five, Four, Jack, Joker, King, Nine, Queen, Seven, Six, Ten, Three, Two};
+        use Card::{
+            Ace, Eight, Five, Four, Jack, Joker, King, Nine, Queen, Seven, Six, Ten, Three, Two,
+        };
 
         let (s, card) = one_of("AKQJT98765432")(s)?;
         let card = match card {
@@ -207,7 +209,9 @@ impl Ord for Hand {
 
 impl Hand {
     fn hand_type(self) -> HandType {
-        use HandType::{FiveOfAKind, FourOfAKind, FullHouse, HighCard, OnePair, ThreeOfAKind, TwoPairs};
+        use HandType::{
+            FiveOfAKind, FourOfAKind, FullHouse, HighCard, OnePair, ThreeOfAKind, TwoPairs,
+        };
 
         if self.has_n_of_a_kind(5) {
             FiveOfAKind

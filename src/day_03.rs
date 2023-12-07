@@ -1,4 +1,4 @@
-use std::{str::FromStr};
+use std::str::FromStr;
 
 use anyhow::Result;
 use itertools::Itertools;
@@ -139,23 +139,24 @@ impl Map {
     }
 
     fn get_gear_parts(&self) -> Vec<(usize, usize)> {
-        self.grid.iter().enumerate().flat_map(|(y, line)| {
-            line.iter().enumerate().filter_map(move |(x, t)| {
-                match t {
-                    Type::Symbol('*') => Some(Pos {x, y}),
+        self.grid
+            .iter()
+            .enumerate()
+            .flat_map(|(y, line)| {
+                line.iter().enumerate().filter_map(move |(x, t)| match t {
+                    Type::Symbol('*') => Some(Pos { y, x }),
                     _ => None,
-                }
+                })
             })
-        })
             .filter_map(|position| {
                 let neighbours = self.calculate_neighbours(&vec![position]);
-                let adjacent_numbers = self.numbers
+                let adjacent_numbers = self
+                    .numbers
                     .iter()
                     .filter(|(_, number_positions)| {
                         neighbours
-                            .iter().any(|neighbour| {
-                                number_positions.contains(neighbour)
-                            })
+                            .iter()
+                            .any(|neighbour| number_positions.contains(neighbour))
                     })
                     .map(|(number, _)| number)
                     .collect_vec();
@@ -170,14 +171,16 @@ impl Map {
     }
 
     fn calculate_neighbours(&self, number_positions: &Vec<Pos>) -> Vec<Pos> {
-        let diffs = [(-1, 0),
+        let diffs = [
+            (-1, 0),
             (-1, -1),
             (-1, 1),
             (0, -1),
             (0, 1),
             (1, -1),
             (1, 0),
-            (1, 1)];
+            (1, 1),
+        ];
 
         number_positions
             .iter()
@@ -189,9 +192,9 @@ impl Map {
                         let x = pos.x as i32 + diff.1;
 
                         if x >= 0
-                        && y >= 0
-                        && x < self.grid[0].len() as i32
-                        && y < self.grid.len() as i32
+                            && y >= 0
+                            && x < self.grid[0].len() as i32
+                            && y < self.grid.len() as i32
                         {
                             Some(Pos {
                                 y: y as usize,
