@@ -82,4 +82,18 @@ mod tests {
         let result = day.compute_2(&input).unwrap();
         assert_eq!(result, answer);
     }
+
+    #[test]
+    fn day_07() {
+        let input = read_input("07");
+        let day = crate::day_07::Day {};
+
+        let answer = "250058342";
+        let result = day.compute_1(&input).unwrap();
+        assert_eq!(result, answer);
+
+        // let answer = "";
+        // let result = day.compute_2(&input).unwrap();
+        // assert_eq!(result, answer);
+    }
 }
