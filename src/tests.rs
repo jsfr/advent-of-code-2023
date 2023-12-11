@@ -4,6 +4,39 @@ mod tests {
     use anyhow::Context;
     use std::fs::read_to_string;
 
+    macro_rules! day_test {
+        ($day:literal, $part1:literal) => {
+            paste::item! {
+                #[test]
+                fn [<day_$day>] () {
+                    let input = read_input($day);
+                    let day = crate::[<day_$day>]::Day {};
+
+                    let answer = $part1;
+                    let result = day.compute_1(&input).unwrap();
+                    assert_eq!(result, answer);
+                }
+            }
+        };
+        ($day:literal, $part1:literal, $part2:literal) => {
+            paste::item! {
+                #[test]
+                fn [<day_$day>] () {
+                    let input = read_input($day);
+                    let day = crate::[<day_$day>]::Day {};
+
+                    let answer = $part1;
+                    let result = day.compute_1(&input).unwrap();
+                    assert_eq!(result, answer);
+
+                    let answer = $part2;
+                    let result = day.compute_2(&input).unwrap();
+                    assert_eq!(result, answer);
+                }
+            }
+        };
+    }
+
     fn read_input(day: &str) -> String {
         let file = format!("./input/{day}");
 
@@ -12,102 +45,12 @@ mod tests {
             .unwrap()
     }
 
-    #[test]
-    fn day_01() {
-        let input = read_input("01");
-        let day = crate::day_01::Day {};
-
-        let answer = "55208";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        let answer = "54578";
-        let result = day.compute_2(&input).unwrap();
-        assert_eq!(result, answer);
-    }
-
-    #[test]
-    fn day_02() {
-        let input = read_input("02");
-        let day = crate::day_02::Day {};
-
-        let answer = "2683";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        let answer = "49710";
-        let result = day.compute_2(&input).unwrap();
-        assert_eq!(result, answer);
-    }
-
-    #[test]
-    fn day_03() {
-        let input = read_input("03");
-        let day = crate::day_03::Day {};
-
-        let answer = "531561";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        let answer = "83279367";
-        let result = day.compute_2(&input).unwrap();
-        assert_eq!(result, answer);
-    }
-
-    #[test]
-    fn day_04() {
-        let input = read_input("04");
-        let day = crate::day_04::Day {};
-
-        let answer = "22193";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        let answer = "5625994";
-        let result = day.compute_2(&input).unwrap();
-        assert_eq!(result, answer);
-    }
-
-    #[test]
-    fn day_05() {
-        let input = read_input("05");
-        let day = crate::day_05::Day {};
-
-        let answer = "825516882";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        // NOTE: Disabled because this test is heavy to run
-        // let answer = "136096660";
-        // let result = day.compute_2(&input).unwrap();
-        // assert_eq!(result, answer);
-    }
-
-    #[test]
-    fn day_06() {
-        let input = read_input("06");
-        let day = crate::day_06::Day {};
-
-        let answer = "1108800";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        let answer = "36919753";
-        let result = day.compute_2(&input).unwrap();
-        assert_eq!(result, answer);
-    }
-
-    #[test]
-    fn day_07() {
-        let input = read_input("07");
-        let day = crate::day_07::Day {};
-
-        let answer = "250058342";
-        let result = day.compute_1(&input).unwrap();
-        assert_eq!(result, answer);
-
-        let answer = "250506580";
-        let result = day.compute_2(&input).unwrap();
-        assert_eq!(result, answer);
-    }
+    day_test!("01", "55208", "54578");
+    day_test!("02", "2683", "49710");
+    day_test!("03", "531561", "83279367");
+    day_test!("04", "22193", "5625994");
+    day_test!("05", "825516882" /*, "136096660" */);
+    day_test!("06", "1108800", "36919753");
+    day_test!("07", "250058342", "250506580");
+    day_test!("08", "13207");
 }

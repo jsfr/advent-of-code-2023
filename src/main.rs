@@ -16,7 +16,7 @@ use argh::FromArgs;
 use solution::Solution;
 
 #[derive(FromArgs)]
-/// AOC 2022
+/// Advent of Code 2023
 struct Args {
     #[argh(positional)]
     day: String,

@@ -4,7 +4,7 @@ use anyhow::{bail, Context, Result};
 use itertools::Itertools;
 use nom::{
     bytes::complete::tag,
-    character::complete::{alpha1, newline},
+    character::complete::{newline, alphanumeric1},
     combinator::{all_consuming, opt},
     multi::separated_list1,
     sequence::{delimited, separated_pair},
@@ -44,17 +44,17 @@ impl Solution for Day {
                 Instr::Left => graph[current_node].0,
                 Instr::Right => graph[current_node].1,
             };
+
             current_instr += 1;
             current_instr %= instrs.len();
+
             total_steps += 1;
         }
-
-        dbg!(graph);
 
         Ok(total_steps.to_string())
     }
 
-    fn compute_2(&self, input: &str) -> Result<String> {
+    fn compute_2(&self, _input: &str) -> Result<String> {
         todo!()
     }
 }
@@ -73,11 +73,11 @@ fn parse_graph(s: &str) -> IResult<&str, HashMap<&str, (&str, &str)>> {
 
 fn parse_node(s: &str) -> IResult<&str, (&str, (&str, &str))> {
     let (s, node) = separated_pair(
-        alpha1,
+        alphanumeric1,
         tag(" = "),
         delimited(
             tag("("),
-            separated_pair(alpha1, tag(", "), alpha1),
+            separated_pair(alphanumeric1, tag(", "), alphanumeric1),
             tag(")"),
         ),
     )(s)?;
