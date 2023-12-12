@@ -1,7 +1,7 @@
-use std::{str::FromStr, fmt::Display};
+use std::{fmt::Display, str::FromStr};
 
-use anyhow::{Result, bail};
-use itertools::Itertools;
+use anyhow::{bail, Result};
+
 use ndarray::Array2;
 
 use crate::solution::Solution;
@@ -15,8 +15,8 @@ impl Solution for Day {
         let galaxies = universe.get_galaxies();
 
         let mut result = 0_usize;
-        for i in 0..galaxies.len()-1 {
-            for j in (i+1)..galaxies.len() {
+        for i in 0..galaxies.len() - 1 {
+            for j in (i + 1)..galaxies.len() {
                 result += galaxies[i].distance(&galaxies[j]);
             }
         }
@@ -29,8 +29,8 @@ impl Solution for Day {
         let galaxies = universe.get_galaxies();
 
         let mut before_expansion = 0_usize;
-        for i in 0..galaxies.len()-1 {
-            for j in (i+1)..galaxies.len() {
+        for i in 0..galaxies.len() - 1 {
+            for j in (i + 1)..galaxies.len() {
                 before_expansion += galaxies[i].distance(&galaxies[j]);
             }
         }
@@ -39,8 +39,8 @@ impl Solution for Day {
         let galaxies = universe.get_galaxies();
 
         let mut after_expansion = 0_usize;
-        for i in 0..galaxies.len()-1 {
-            for j in (i+1)..galaxies.len() {
+        for i in 0..galaxies.len() - 1 {
+            for j in (i + 1)..galaxies.len() {
                 after_expansion += galaxies[i].distance(&galaxies[j]);
             }
         }
@@ -54,7 +54,7 @@ impl Solution for Day {
 }
 
 struct Universe {
-    universe: Array2<Space>
+    universe: Array2<Space>,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -86,29 +86,24 @@ impl Universe {
             if row.iter().all(|space| matches!(space, Space::Empty)) {
                 rows.push(vec![Space::Empty; row.len()]);
             }
-            rows.push(row.to_vec())
+            rows.push(row.to_vec());
         }
 
-        let universe = Array2::from_shape_fn((rows.len(), rows[0].len()), |(y,x)| {
-            rows[y][x]
-        });
+        let universe = Array2::from_shape_fn((rows.len(), rows[0].len()), |(y, x)| rows[y][x]);
 
         let mut columns = Vec::with_capacity(self.universe.shape()[1]);
 
         for column in universe.columns() {
             if column.iter().all(|space| matches!(space, Space::Empty)) {
-                columns.push(vec![Space::Empty; column.len()])
+                columns.push(vec![Space::Empty; column.len()]);
             }
-            columns.push(column.to_vec())
+            columns.push(column.to_vec());
         }
 
-        let universe = Array2::from_shape_fn((columns[0].len(), columns.len()), |(y, x)| {
-            columns[x][y]
-        });
+        let universe =
+            Array2::from_shape_fn((columns[0].len(), columns.len()), |(y, x)| columns[x][y]);
 
-        Self {
-            universe
-        }
+        Self { universe }
     }
 
     fn get_galaxies(&self) -> Vec<Point> {
@@ -117,9 +112,9 @@ impl Universe {
 
         for y in 0..shape[0] {
             for x in 0..shape[1] {
-                let space = self.universe.get((y,x)).unwrap();
+                let space = self.universe.get((y, x)).unwrap();
                 if matches!(space, Space::Galaxy) {
-                    galaxies.push(Point {x, y})
+                    galaxies.push(Point { x, y });
                 }
             }
         }
@@ -132,19 +127,20 @@ impl FromStr for Universe {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        let u_vec: Vec<Vec<_>> = s.lines().map(|line| {
-            line.chars().map(|c| {
-                match c {
-                   '#' => Ok(Space::Galaxy),
-                    '.' => Ok(Space::Empty),
-                    _ => bail!("Unknown space type '{c}'")
-                }
-            }).collect()
-        }).collect::<Result<_>>()?;
+        let u_vec: Vec<Vec<_>> = s
+            .lines()
+            .map(|line| {
+                line.chars()
+                    .map(|c| match c {
+                        '#' => Ok(Space::Galaxy),
+                        '.' => Ok(Space::Empty),
+                        _ => bail!("Unknown space type '{c}'"),
+                    })
+                    .collect()
+            })
+            .collect::<Result<_>>()?;
 
-        let universe = Array2::from_shape_fn((u_vec.len(), u_vec[0].len()), |(y, x)| {
-            u_vec[y][x]
-        });
+        let universe = Array2::from_shape_fn((u_vec.len(), u_vec[0].len()), |(y, x)| u_vec[y][x]);
 
         Ok(Self { universe })
     }
@@ -154,12 +150,16 @@ impl Display for Universe {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for row in self.universe.rows() {
             row.iter().for_each(|space| {
-                let _ = write!(f, "{}", match space {
-                    Space::Empty => ".",
-                    Space::Galaxy => "#",
-                });
+                let _ = write!(
+                    f,
+                    "{}",
+                    match space {
+                        Space::Empty => ".",
+                        Space::Galaxy => "#",
+                    }
+                );
             });
-            let _ = write!(f, "\n");
+            let _ = writeln!(f);
         }
 
         Ok(())

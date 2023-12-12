@@ -1,4 +1,4 @@
-use anyhow::{Result, Context};
+use anyhow::{Context, Result};
 use itertools::Itertools;
 
 use crate::solution::Solution;
@@ -10,31 +10,33 @@ impl Solution for Day {
         let oasis_report: Vec<Vec<i64>> = input
             .lines()
             .map(|line| {
-                line
-                    .split(' ')
+                line.split(' ')
                     .map(|n| n.parse().context(format!("failed to parse {n}")))
                     .collect()
             })
             .collect::<Result<_>>()?;
 
-        let result = oasis_report.into_iter().map(|line| {
-            let mut series = vec![line];
+        let result = oasis_report
+            .into_iter()
+            .map(|line| {
+                let mut series = vec![line];
 
-            loop {
-                let s = series.last().unwrap();
+                loop {
+                    let s = series.last().unwrap();
 
-                if s.iter().all(|n| *n == 0) {
-                    break
-                } else {
-                    series.push(s.iter().tuple_windows().map(|(a,b)| b - a).collect());
+                    if s.iter().all(|n| *n == 0) {
+                        break;
+                    }
+
+                    series.push(s.iter().tuple_windows().map(|(a, b)| b - a).collect());
                 }
-            }
 
-            series.into_iter().rev().fold(0, |acc, s| {
-                acc + s.last().unwrap()
+                series
+                    .into_iter()
+                    .rev()
+                    .fold(0, |acc, s| acc + s.last().unwrap())
             })
-        })
-        .sum::<i64>();
+            .sum::<i64>();
 
         Ok(result.to_string())
     }
@@ -43,34 +45,34 @@ impl Solution for Day {
         let oasis_report: Vec<Vec<i64>> = input
             .lines()
             .map(|line| {
-                line
-                    .split(' ')
+                line.split(' ')
                     .map(|n| n.parse().context(format!("failed to parse {n}")))
                     .collect()
             })
             .collect::<Result<_>>()?;
 
-        let result = oasis_report.into_iter().map(|line| {
-            let mut series = vec![line];
+        let result = oasis_report
+            .into_iter()
+            .map(|line| {
+                let mut series = vec![line];
 
-            loop {
-                let s = series.last().unwrap();
+                loop {
+                    let s = series.last().unwrap();
 
-                if s.iter().all(|n| *n == 0) {
-                    break
-                } else {
-                    series.push(s.iter().tuple_windows().map(|(a,b)| b - a).collect());
+                    if s.iter().all(|n| *n == 0) {
+                        break;
+                    }
+
+                    series.push(s.iter().tuple_windows().map(|(a, b)| b - a).collect());
                 }
-            }
 
-            series.into_iter().rev().fold(0, |acc, s| {
-                s.first().unwrap() - acc
+                series
+                    .into_iter()
+                    .rev()
+                    .fold(0, |acc, s| s.first().unwrap() - acc)
             })
-        })
-        .sum::<i64>();
+            .sum::<i64>();
 
         Ok(result.to_string())
     }
 }
-
-

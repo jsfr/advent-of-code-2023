@@ -4,7 +4,7 @@ use anyhow::{bail, Context, Result};
 use itertools::Itertools;
 use nom::{
     bytes::complete::tag,
-    character::complete::{newline, alphanumeric1},
+    character::complete::{alphanumeric1, newline},
     combinator::{all_consuming, opt},
     multi::separated_list1,
     sequence::{delimited, separated_pair},
